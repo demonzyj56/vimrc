@@ -1,2 +1,5 @@
 .*
 !.gitignore
+
+# folder for experimental scripts, not sourced
+experimental/
