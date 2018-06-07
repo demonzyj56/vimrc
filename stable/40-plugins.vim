@@ -21,6 +21,21 @@ function! UnmanagedPlugins(name) abort
     return l:prefix.a:name
 endfunction
 
+" See:
+" https://github.com/junegunn/vim-plug/issues/432
+" https://github.com/tony/vim-config-framework/blob/master/plugin_loader.vim
+function! PlugOnLoad(name, source)
+    if !has_key(g:plugs, a:name)
+        return 1
+    endif
+    if has_key(g:plugs[a:name], 'on') || has_key(g:plugs[a:name], 'for')
+        exec 'autocmd! User' a:name a:source
+    else
+        exec 'autocmd VimEnter *' a:source
+    endif
+    return 0
+endfunction
+
 call plug#begin()
 
 Plug 'hachy/eva01.vim'
