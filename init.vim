@@ -7,17 +7,27 @@ endif
 let s:home = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 exec 'set rtp+='.s:home
 
-function! s:LoadScript(p) abort
+function! s:load_script(p) abort
     " The path p is assumed to be full path
     exec 'so '.a:p
-    return ""
+    return 0
 endfunction
 
-let s:stable_scripts = globpath(s:home.'/stable', '*.vim', 0, 1)
-call sort(s:stable_scripts)
-call map(s:stable_scripts, '<SID>LoadScript(v:val)')
-if isdirectory(s:home.'/experimental')
-    let s:experimental_scripts = globpath(s:home.'/experimental', '*.vim', 0, 1)
-    call sort(s:experimental_scripts)
-    call map(s:experimental_scripts, '<SID>LoadScript(v:val)')
-endif
+function! s:load_all_from(p) abort
+    " Load all the scripts from a specific folder.
+    let l:scripts = globpath(a:p, '*.vim', 0, 1)
+    call sort(l:scripts)
+    call map(l:scripts, '<SID>load_script(v:val)')
+    return 0
+endfunction
+
+function! s:load_all_scripts() abort
+    call <SID>load_all_from(s:home.'/stable')
+    if isdirectory(s:home.'/experimental')
+        call <SID>load_all_from(s:home.'/experimental')
+    endif
+    return 0
+endfunction
+
+command! -nargs=0 SO call <SID>load_all_scripts()
+call <SID>load_all_scripts()
