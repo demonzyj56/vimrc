@@ -1,7 +1,3 @@
-" leader key
-let mapleader=","
-let maplocalleader="\\"
-
 " My custom keymaps
 nnoremap <leader>w :w!<cr>
 nnoremap <silent> <leader><cr> :nohl<cr>

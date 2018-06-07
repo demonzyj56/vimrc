@@ -1,5 +1,9 @@
 " Here comes all the custom things
 
+" leader key
+let mapleader=","
+let maplocalleader="\\"
+
 " Tags
 set tags=./.tags;,.tags
 
