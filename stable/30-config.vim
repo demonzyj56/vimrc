@@ -3,19 +3,12 @@
 " Tags
 set tags=./.tags;,.tags
 
-" leader key
-let mapleader=","
-let maplocalleader="\\"
-
 " wildignore
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.db,*.sqlite,*~,*.pkl,*.npy
 set wildignore+=*.o,*.obj,.git,.svn,.hg,*.rbc,*.pyc,__pycache__
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-" Visual mode pressing * or # searches for the current selection
-vnoremap <silent> * :<C-u>call <SID>VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 
 " Setup path and some executables, especially ctags
 " Add all folders under ~/.vim/bin to path.
@@ -42,20 +35,6 @@ let g:leoyolo_project_root = [
     \ '.bzr', 'Makefile', 'CMakeLists.txt'
     \ ]
 
-
-function! s:VisualSelection(direction, extra_filter) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'gv'
-        call CmdLine("Ag \"" . l:pattern . "\" " )
-    elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
+" Display help at ease
+command! -nargs=+ -complete=help HH :help <args>
+command! -nargs=+ -complete=help VH :vertical help <args>
