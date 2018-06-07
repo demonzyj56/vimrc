@@ -9,3 +9,6 @@ nnoremap <C-l> <C-w>=<C-w>l
 nnoremap <silent> <leader>l :bnext<cr>
 nnoremap <silent> <leader>h :bprevious<cr>
 nnoremap <silent> <leader>bd :bd<cr>
+
+command! -nargs=+ -complete=help HH :help <args>
+command! -nargs=+ -complete=help VH :vertical help <args>
