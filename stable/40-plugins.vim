@@ -21,6 +21,8 @@ function! UnmanagedPlugins(name) abort
     return l:prefix.a:name
 endfunction
 
+" This should be the last resort when you configure for some autoload function
+" but the plugin is not yet loaded.
 " See:
 " https://github.com/junegunn/vim-plug/issues/432
 " https://github.com/tony/vim-config-framework/blob/master/plugin_loader.vim
@@ -70,7 +72,7 @@ Plug 'w0rp/ale'
 Plug 'skywind3000/vim-preview', {'on': []}
 
 " Unmanaged plugins
-Plug UnmanagedPlugins('YouCompleteMe'), {'on': []}
+Plug UnmanagedPlugins('YouCompleteMe'), {'on': ['YcmCompleter']}
 
 call plug#end()
 
