@@ -34,7 +34,7 @@ endif
 
 " Define a global variable for probject root
 let g:leoyolo_project_root = [
-    \ '.git', 'git/',
+    \ '.git', '.git/',
     \ '.root', '.idea/', '.svn/', '.hg/', '.project', '.ropeproject',
     \ '.bzr', '.github/'
     \ ]
