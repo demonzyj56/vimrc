@@ -2,7 +2,6 @@
 if !has('gui_running')
     finish
 endif
-set background=dark
 set guioptions-=T
 set guioptions-=e
 set guioptions-=m

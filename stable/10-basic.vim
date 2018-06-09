@@ -29,6 +29,7 @@ set wildmenu
 set history=500
 set showmatch
 set mat=2
+set background=dark
 
 " editing settings
 
