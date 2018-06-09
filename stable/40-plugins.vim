@@ -67,6 +67,7 @@ Plug 'honza/vim-snippets', {'on': []}
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
+Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -263,3 +264,22 @@ let g:ale_python_pylint_executable = 'pylint'
 let g:ale_python_pylint_options = '--disable=invalid-name,bare-except --extension-pkg-whitelist=torch'
 " TODO(leoyolo): to be set
 let g:ale_python_pycodestyle_options = ''
+
+" pymode
+" This should act as a sensible configs for python code
+" so use only minimal configurations.
+let g:pymode_run = 0
+let g:pymode_breakpoint = 1
+let g:pymode_folding = 0
+let g:pymode_trim_whitespaces = 1
+let g:pymode_options = 1
+let g:pymode_lint = 0
+let g:pymode_doc = 0
+let g:pymode_rope = 0
+let g:pymode_motion = 1
+" Choose python version supported by vim, preferably python3.
+if has('python3')
+    let g:pymode_python = 'python3'
+else
+    let g:pymode_python = 'python'
+endif
