@@ -72,7 +72,13 @@ Plug 'w0rp/ale'
 Plug 'skywind3000/vim-preview', {'on': []}
 
 " Unmanaged plugins
-Plug UnmanagedPlugins('YouCompleteMe'), {'on': ['YcmCompleter']}
+" On windows I managed it manually.  Otherwise I use vim-plug to manage
+" but build it manually.
+if has('win32')
+    Plug UnmanagedPlugins('YouCompleteMe'), {'on': ['YcmCompleter']}
+else
+    Plug 'Valloric/YouCompleteMe', {'on': ['YcmCompleter']}
+endif
 
 call plug#end()
 
