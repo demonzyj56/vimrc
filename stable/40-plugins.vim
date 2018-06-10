@@ -110,6 +110,7 @@ let g:airline#extensions#ycm#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 
 " NERDTree
+let g:NERDTreeHijackNetrw = 0
 nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
