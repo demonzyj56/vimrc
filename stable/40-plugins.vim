@@ -68,6 +68,7 @@ Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
 Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
+Plug 'kassio/neoterm'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -261,9 +262,9 @@ let g:ale_lint_on_insert_leave = 1
 " ale-pylint
 let g:ale_python_pylint_use_global = 0
 let g:ale_python_pylint_executable = 'pylint'
-let g:ale_python_pylint_options = '--disable=invalid-name,bare-except --extension-pkg-whitelist=torch'
-" TODO(leoyolo): to be set
-let g:ale_python_pycodestyle_options = ''
+let g:ale_python_pylint_options = 
+    \ '--disable=invalid-name,bare-except,too-many-arguments --extension-pkg-whitelist=torch,cv2'
+let g:ale_python_pycodestyle_options = '--ignore=E501,E226,E265'
 
 " pymode
 " This should act as a sensible configs for python code
