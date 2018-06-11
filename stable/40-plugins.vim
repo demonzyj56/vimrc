@@ -148,13 +148,13 @@ let g:AutoPairsShortcutBackInsert = ''
 " use tab for multiple selection
 " TODO(leoyolo): more sensible mappings
 let g:multi_cursor_use_default_mapping = 0
-let g:multi_cursor_start_word_key      = '<Tab>'
-let g:multi_cursor_select_all_word_key = '<NOP>'
-let g:multi_cursor_start_key           = 'g<Tab>'
-let g:multi_cursor_select_all_key      = '<NOP>'
-let g:multi_cursor_next_key            = '<Tab>'
-let g:multi_cursor_prev_key            = '<S-Tab>'
-let g:multi_cursor_skip_key            = '<m-x>'
+let g:multi_cursor_start_word_key      = '<leader>mw'
+let g:multi_cursor_select_all_word_key = '<leader>mW'
+let g:multi_cursor_start_key           = '<leader>mk'
+let g:multi_cursor_select_all_key      = '<leader>mK'
+let g:multi_cursor_next_key            = '<leader>mn'
+let g:multi_cursor_prev_key            = '<leader>mp'
+let g:multi_cursor_skip_key            = '<leader>ms'
 let g:multi_cursor_quit_key            = '<Esc>'
 
 
