@@ -69,6 +69,7 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
 Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
 Plug 'Shougo/denite.nvim'
+Plug 'Shougo/neomru.vim'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
