@@ -68,7 +68,7 @@ Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
 Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
-Plug 'kassio/neoterm'
+Plug 'Shougo/denite.nvim'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -101,11 +101,16 @@ endtry
 
 " vim-airline
 let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:alrline#extensions#ale#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#gutentags#enabled = 1
+let g:airline#extensions#ycm#enabled = 1
+let g:airline#extensions#branch#enabled = 1
 
 " NERDTree
+let g:NERDTreeHijackNetrw = 0
 nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
