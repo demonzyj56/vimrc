@@ -68,6 +68,7 @@ Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
 Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
+Plug 'junegunn/vim-emoji'
 Plug 'Shougo/denite.nvim'
 Plug 'Shougo/neomru.vim'
 
@@ -289,3 +290,7 @@ if has('python3')
 else
     let g:pymode_python = 'python'
 endif
+
+" signify
+let g:signify_sign_add = emoji#for('heavy_plus_sign')
+let g:signify_sign_change = emoji#for('heavy_exclamation_mark')
