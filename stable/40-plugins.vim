@@ -71,6 +71,7 @@ Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
 Plug 'junegunn/vim-emoji'
 Plug 'Shougo/denite.nvim'
 Plug 'Shougo/neomru.vim'
+Plug 'kassio/neoterm'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -292,5 +293,7 @@ else
 endif
 
 " signify
-let g:signify_sign_add = emoji#for('heavy_plus_sign')
-let g:signify_sign_change = emoji#for('heavy_exclamation_mark')
+if has('gui_running')
+    let g:signify_sign_add = emoji#for('heavy_plus_sign')
+    let g:signify_sign_change = emoji#for('heavy_exclamation_mark')
+endif
