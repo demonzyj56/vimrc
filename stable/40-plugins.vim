@@ -72,6 +72,8 @@ Plug 'junegunn/vim-emoji'
 Plug 'Shougo/denite.nvim'
 Plug 'Shougo/neomru.vim'
 Plug 'kassio/neoterm'
+" A folked version to fix problems with ALE.
+Plug 'neozenith/tender.vim'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -97,7 +99,9 @@ augroup END
 
 " default colorscheme
 try
-    colorscheme gruvbox
+    colorscheme tender
+    let g:airline_theme = 'tender'
+    hi clear SignColumn
 catch
     colorscheme desert
 endtry
@@ -290,10 +294,4 @@ if has('python3')
     let g:pymode_python = 'python3'
 else
     let g:pymode_python = 'python'
-endif
-
-" signify
-if has('gui_running')
-    let g:signify_sign_add = emoji#for('heavy_plus_sign')
-    let g:signify_sign_change = emoji#for('heavy_exclamation_mark')
 endif

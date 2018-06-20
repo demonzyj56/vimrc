@@ -30,6 +30,7 @@ set history=500
 set showmatch
 set mat=2
 set background=dark
+set noshowmode
 
 " editing settings
 
@@ -68,6 +69,9 @@ set ttimeoutlen=80
 
 " enable 256 color
 set t_Co=256
+if has('termguicolors')
+    set termguicolors
+endif
 
 " Suppress marco. I don't use it.
 nnoremap q :echom "Marco is suppressed"<cr>
