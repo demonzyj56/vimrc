@@ -99,9 +99,7 @@ augroup END
 
 " default colorscheme
 try
-    colorscheme tender
-    let g:airline_theme = 'tender'
-    hi clear SignColumn
+    colorscheme gruvbox
 catch
     colorscheme desert
 endtry
