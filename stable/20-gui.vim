@@ -5,6 +5,8 @@ endif
 set guioptions-=T
 set guioptions-=e
 set guioptions-=m
+set guioptions-=L
+set guioptions-=r
 
 set langmenu=en_US
 let $LANG = 'en_US'
@@ -12,7 +14,7 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 if has("unix")
     try
-        set guifont=Hack\ 10
+        set guifont=Hack\ 11
     catch
     endtry
 elseif has("win32")
