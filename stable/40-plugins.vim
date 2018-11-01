@@ -77,6 +77,8 @@ Plug 'neozenith/tender.vim'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
+Plug 'godlygeek/tabular'
+Plug 'lervag/vimtex'
 
 " Unmanaged plugins
 " On windows I managed it manually.  Otherwise I use vim-plug to manage
@@ -233,7 +235,7 @@ let g:ycm_min_num_identifier_candidate_chars = 2
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_complete_in_strings=1
 let g:ycm_key_invoke_completion = '<c-z>'
-nnoremap <silent> <M-]> :YcmCompleter GoTo<cr>
+nnoremap <silent> <leader>g :YcmCompleter GoTo<cr>
 noremap <c-z> <NOP>
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
@@ -254,6 +256,7 @@ let g:ycm_semantic_triggers =  {
 let g:ycm_semantic_triggers =  {
   \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
   \ 'cs,lua,javascript': ['re!\w{2}'],
+  \ 'tex': g:vimtex#re#youcompleteme,
   \ }
 
 " ale
@@ -293,3 +296,33 @@ if has('python3')
 else
     let g:pymode_python = 'python'
 endif
+
+" vimtex
+" let g:vimtex_view_general_viewer = 'SumatraPDF'
+" let g:vimtex_view_general_options
+"     \ = '-reuse-instance -forward-search @tex @line @pdf'
+" let g:vimtex_view_general_options_latexmk = '-reuse-instance'
+let g:vimtex_quickfix_mode = 0
+augroup leoyolo_vimtex
+    autocmd!
+    autocmd FileType tex nmap <silent> <F3> :call <SID>TexWriterModeToggle()<cr>
+    autocmd FileType tex nmap <F5> <plug>(vimtex-compile)
+augroup END
+
+" Toggle writer mode on and off
+function! s:TexWriterModeToggle()
+    setlocal spell! spelllang=en
+    " Optionally if a tex file, set/unset alex/write-good linters
+    if !has_key(g:ale_linters, 'tex')
+        let g:ale_linters['tex'] = []
+    endif
+    if !exists('s:leoyolo_tex_writer_mode_toggled') || !s:leoyolo_tex_writer_mode_toggled
+        let s:leoyolo_tex_writer_mode_toggled = 1
+        let g:ale_linters['tex'] += ['alex', 'write-good']
+    else
+        let s:leoyolo_tex_writer_mode_toggled = 0
+        let g:ale_linters['tex'] 
+            \ = filter(g:ale_linters['tex'], 'v:val !~ "alex" && v:val !~ "write-good"')
+    endif
+    execute('ALELint')
+endfunction
