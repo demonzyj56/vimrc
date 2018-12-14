@@ -57,7 +57,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region'
 Plug 'easymotion/vim-easymotion', {'on': ['<PLug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f2)']}
 Plug 'airblade/vim-rooter'
-Plug 'skywind3000/asyncrun.vim', {'on': ['AsyncRun', 'AsyncRun!']}
+Plug 'skywind3000/asyncrun.vim'
 Plug 'Yggdroot/LeaderF'
 Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<plug>(GrepperOperator)']}
 Plug 'wsdjeg/FlyGrep.vim', {'on': 'FlyGrep'}
@@ -72,13 +72,12 @@ Plug 'junegunn/vim-emoji'
 Plug 'Shougo/denite.nvim'
 Plug 'Shougo/neomru.vim'
 Plug 'kassio/neoterm'
-" A folked version to fix problems with ALE.
-Plug 'neozenith/tender.vim'
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'godlygeek/tabular'
+Plug 'lervag/vimtex'
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
-Plug 'godlygeek/tabular'
-Plug 'lervag/vimtex'
 
 " Unmanaged plugins
 " On windows I managed it manually.  Otherwise I use vim-plug to manage
@@ -211,6 +210,20 @@ let g:Lf_NormalMap = {
 " Grepper: vim-grepper/ack.vim/FlyGrep...
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
+    " Define custom search using ag
+    function Search(string) abort
+        let saved_pipeline = &shellpipe
+        let &shellpipe = '>'
+        try
+            execute 'Ack!' shellescape(a:string, 1)
+        finally
+            let &shellpipe = saved_pipeline
+        endtry
+    endfunction
+    " Set function into command
+    command! -nargs=* -complete=file Search call Search(<q-args>)
+    " bind # to grep word under cursor
+    nnoremap # :Search <C-R><C-W><CR>
 endif
 
 " snippets, using ycm as completer
