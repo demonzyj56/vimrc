@@ -59,8 +59,6 @@ Plug 'easymotion/vim-easymotion', {'on': ['<PLug>(easymotion-prefix)', '<Plug>(e
 Plug 'airblade/vim-rooter'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'Yggdroot/LeaderF'
-Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<plug>(GrepperOperator)']}
-Plug 'wsdjeg/FlyGrep.vim', {'on': 'FlyGrep'}
 Plug 'mileszs/ack.vim', {'on': ['Ack', 'Ack!']}
 Plug 'SirVer/ultisnips', {'on': []}
 Plug 'honza/vim-snippets', {'on': []}
@@ -75,6 +73,13 @@ Plug 'kassio/neoterm'
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'godlygeek/tabular'
 Plug 'lervag/vimtex'
+
+" FZF is managed outside vim/nvim.
+" TODO(leoyolo): compatible with windows.
+if executable('fzf')
+    Plug expand('~/.fzf')
+    Plug 'junegunn/fzf.vim'
+endif
 
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
@@ -207,7 +212,7 @@ let g:Lf_NormalMap = {
 	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
 	\ }
 
-" Grepper: vim-grepper/ack.vim/FlyGrep...
+" Grepper: 
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
     " Define custom search using ag
@@ -346,3 +351,51 @@ function! s:TexWriterModeToggle()
     endif
     execute('ALELint')
 endfunction
+
+
+" FZF
+" Set prefix for FZF commands
+let g:fzf_command_prefix = 'Fzf'
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" Augmenting Ag command using fzf#vim#with_preview function
+"   * fzf#vim#with_preview([[options], [preview window], [toggle keys...]])
+"     * For syntax-highlighting, Ruby and any of the following tools are required:
+"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
+"       - CodeRay: http://coderay.rubychan.de/
+"       - Rouge: https://github.com/jneen/rouge
+"
+"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :Ag! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* FzfAg
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
+" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+" Likewise, Files command with preview window
+command! -bang -nargs=? -complete=dir FzfFiles
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
