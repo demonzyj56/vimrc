@@ -78,6 +78,7 @@ Plug 'godlygeek/tabular'
 Plug 'lervag/vimtex'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'sheerun/vim-polyglot'
+Plug 'Shougo/echodoc.vim'
 " FIXME(leoyolo): temporary block Denite for vim8.
 if has('nvim')
     Plug 'Shougo/denite.nvim', {'do': 'UpdateRemotePlugins'}
@@ -119,7 +120,7 @@ else
     " ncm2 completion framework
     Plug 'ncm2/ncm2'
     Plug 'ncm2/ncm2-bufword'
-    Plug 'fgrsnau/ncm-otherbuf'
+    Plug 'fgrsnau/ncm2-otherbuf', {'branch': 'ncm2'}
     Plug 'ncm2/ncm2-path'
     Plug 'ncm2/ncm2-jedi'
     Plug 'ncm2/ncm2-ultisnips'
@@ -420,3 +421,7 @@ nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " Trim whitespace
 nnoremap <silent> <leader><space> :StripWhitespace<CR>
+
+" echodoc
+let g:echodoc#enable_at_startup = 1
+let g:echodoc#type = 'signature'
