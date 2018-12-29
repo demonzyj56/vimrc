@@ -79,6 +79,7 @@ Plug 'lervag/vimtex'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'sheerun/vim-polyglot'
 Plug 'Shougo/echodoc.vim'
+Plug 'rust-lang/rust.vim'
 " FIXME(leoyolo): temporary block Denite for vim8.
 if has('nvim')
     Plug 'Shougo/denite.nvim', {'do': 'UpdateRemotePlugins'}
