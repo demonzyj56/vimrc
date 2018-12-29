@@ -21,7 +21,7 @@ if has('win32')
 else
     let s:vim_bin = expand('~/.vim/bin')
 endif
-let s:bin_paths_to_add 
+let s:bin_paths_to_add
     \ = filter(globpath(s:vim_bin, '*', 0, 1), 'isdirectory(v:val)') + [s:vim_bin]
 if has('win32')
     let $PATH = join(s:bin_paths_to_add, ';').';'.$PATH
@@ -42,3 +42,20 @@ let g:leoyolo_project_root = [
 " Display help at ease
 command! -nargs=+ -complete=help HH :help <args>
 command! -nargs=+ -complete=help VH :vertical help <args>
+
+" Specify python version for nvim before loading any plugins.
+" TODO(leoyolo): This works for neovim only. Suggest a good way for vim8.
+if filereadable(s:vim_bin . '/python3')
+    let g:python3_host_prog = s:vim_bin . '/python3'
+elseif !has('win32')
+    let g:python3_host_prog = '/usr/bin/python3'
+else
+    let g:python3_host_prog = 'python3'
+endif
+if filereadable(s:vim_bin . '/python2')
+    let g:python_host_prog = s:vim_bin . '/python2'
+elseif !has('win32')
+    let g:python_host_prog = '/usr/bin/python2'
+else
+    let g:python_host_prog = 'python2'
+endif

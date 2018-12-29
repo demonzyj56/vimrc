@@ -40,6 +40,12 @@ endfunction
 
 call plug#begin()
 
+" NVIM support
+if !has('nvim')
+    Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'roxma/nvim-yarp'
+
 Plug 'hachy/eva01.vim'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
@@ -60,19 +66,24 @@ Plug 'airblade/vim-rooter'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'Yggdroot/LeaderF'
 Plug 'mileszs/ack.vim', {'on': ['Ack', 'Ack!']}
-Plug 'SirVer/ultisnips', {'on': []}
-Plug 'honza/vim-snippets', {'on': []}
-Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'majutsushi/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
-Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
 Plug 'junegunn/vim-emoji'
-Plug 'Shougo/denite.nvim'
-Plug 'Shougo/neomru.vim'
 Plug 'kassio/neoterm'
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'godlygeek/tabular'
 Plug 'lervag/vimtex'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'sheerun/vim-polyglot'
+" FIXME(leoyolo): temporary block Denite for vim8.
+if has('nvim')
+    Plug 'Shougo/denite.nvim', {'do': 'UpdateRemotePlugins'}
+    Plug 'Shougo/defx.nvim', {'do': 'UpdateRemotePlugins'}
+    Plug 'Shougo/neomru.vim'
+endif
 
 " FZF is managed outside vim/nvim.
 " TODO(leoyolo): compatible with windows.
@@ -84,23 +95,39 @@ endif
 " TODO(leoyolo): figure out how to use.
 Plug 'skywind3000/vim-preview', {'on': []}
 
-" Unmanaged plugins
-" On windows I managed it manually.  Otherwise I use vim-plug to manage
-" but build it manually.
-if has('win32')
-    Plug UnmanagedPlugins('YouCompleteMe'), {'on': ['YcmCompleter']}
+if !has('win32')
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
 else
-    Plug 'Valloric/YouCompleteMe', {'on': ['YcmCompleter']}
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'powershell -executionpolicy bypass -File install.ps1',
+        \ }
+endif
+
+if get(g:, 'leoyolo_prefer_ycm', 0) != 0
+    if has('win32')
+        Plug UnmanagedPlugins('YouCompleteMe')
+    else
+        Plug 'Valloric/YouCompleteMe'
+    endif
+else
+    let g:leoyolo_prefer_ncm2 = 1
+
+    " ncm2 completion framework
+    Plug 'ncm2/ncm2'
+    Plug 'ncm2/ncm2-bufword'
+    Plug 'fgrsnau/ncm-otherbuf'
+    Plug 'ncm2/ncm2-path'
+    Plug 'ncm2/ncm2-jedi'
+    Plug 'ncm2/ncm2-ultisnips'
+    Plug 'ncm2/ncm2-vim' | Plug 'Shougo/neco-vim'
+    Plug 'ncm2/ncm2-syntax' | Plug 'Shougo/neco-syntax'
 endif
 
 call plug#end()
-
-" https://github.com/junegunn/vim-plug/wiki/tips
-augroup load_us_ycm
-    autocmd!
-    autocmd InsertEnter * call plug#load('ultisnips', 'vim-snippets', 'YouCompleteMe')
-        \| autocmd! load_us_ycm
-augroup END
 
 
 " default colorscheme
@@ -117,8 +144,32 @@ let g:airline#extensions#tabline#enabled = 1
 let g:alrline#extensions#ale#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#gutentags#enabled = 1
-let g:airline#extensions#ycm#enabled = 1
 let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#languageclient#enabled = 1
+let g:airline#extensions#vimtex#enabled = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_idx_format = {
+    \ '0': '0:',
+    \ '1': '1:',
+    \ '2': '2:',
+    \ '3': '3:',
+    \ '4': '4:',
+    \ '5': '5:',
+    \ '6': '6:',
+    \ '7': '7:',
+    \ '8': '8:',
+    \ '9': '9:'
+    \}
+nmap <M-1> <Plug>AirlineSelectTab1
+nmap <M-2> <Plug>AirlineSelectTab2
+nmap <M-3> <Plug>AirlineSelectTab3
+nmap <M-4> <Plug>AirlineSelectTab4
+nmap <M-5> <Plug>AirlineSelectTab5
+nmap <M-6> <Plug>AirlineSelectTab6
+nmap <M-7> <Plug>AirlineSelectTab7
+nmap <M-8> <Plug>AirlineSelectTab8
+nmap <M-9> <Plug>AirlineSelectTab9
+
 
 " NERDTree
 let g:NERDTreeHijackNetrw = 0
@@ -186,7 +237,7 @@ let g:rooter_use_lcd = 1
 
 " Code dispatcher: asyncrun
 let g:asyncrun_status = ''
-let g:airline_section_error = g:airline#section#create_right(['%{g:asyncrun_status}'])
+" let g:airline_section_error = g:airline#section#create_right(['%{g:asyncrun_status}'])
 let g:asyncrun_open = 10
 let g:asyncrun_rootmarks = g:leoyolo_project_root
 nnoremap <silent> <F10> :call asyncrun#quickfix_toggle(g:asyncrun_open)<cr>
@@ -212,11 +263,11 @@ let g:Lf_NormalMap = {
 	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
 	\ }
 
-" Grepper: 
+" Grepper:
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
     " Define custom search using ag
-    function Search(string) abort
+    function! s:Search(string) abort
         let saved_pipeline = &shellpipe
         let &shellpipe = '>'
         try
@@ -226,7 +277,7 @@ if executable('ag')
         endtry
     endfunction
     " Set function into command
-    command! -nargs=* -complete=file Search call Search(<q-args>)
+    command! -nargs=* -complete=file Search call <SID>Search(<q-args>)
     " bind # to grep word under cursor
     nnoremap # :Search <C-R><C-W><CR>
 endif
@@ -240,47 +291,10 @@ if has('python')
     let g:UltiSnipsUsePythonVersion = 2
 endif
 
-" YouCompleteMe
-" from https://zhuanlan.zhihu.com/p/33046090
-" TODO(leoyolo): config for correct path
-if has('win32') && has('python')
-    let g:ycm_server_python_interpreter = 'C:\\Python27\\python.exe'
-endif
-let g:ycm_python_binary_path = 'python'
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_server_log_level = 'info'
-let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_strings=1
-let g:ycm_key_invoke_completion = '<c-z>'
-nnoremap <silent> <leader>g :YcmCompleter GoTo<cr>
-noremap <c-z> <NOP>
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_use_ultisnips_completer = 1
-let g:ycm_semantic_triggers =  {
-  \   'c' : ['->', '.'],
-  \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
-  \             're!\[.*\]\s'],
-  \   'ocaml' : ['.', '#'],
-  \   'cpp,objcpp' : ['->', '.', '::'],
-  \   'perl' : ['->'],
-  \   'php' : ['->', '::'],
-  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
-  \   'ruby' : ['.', '::'],
-  \   'lua' : ['.', ':'],
-  \   'erlang' : [':'],
-  \ }
-let g:ycm_semantic_triggers =  {
-  \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-  \ 'cs,lua,javascript': ['re!\w{2}'],
-  \ 'tex': g:vimtex#re#youcompleteme,
-  \ }
 
 " ale
 let g:ale_linters = {
     \'cpp': ['clangtidy', 'cppcheck', 'clang', 'g++'],
-    \'python': ['pylint', 'pycodestyle'],
     \'tex': ['chktex'],
 \}
 let g:ale_linters_explicit = 1
@@ -289,31 +303,6 @@ let g:ale_echo_delay = 20
 let g:ale_lint_delay = 500
 let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 let g:ale_lint_on_insert_leave = 1
-" ale-pylint
-let g:ale_python_pylint_use_global = 0
-let g:ale_python_pylint_executable = 'pylint'
-let g:ale_python_pylint_options = 
-    \ '--disable=invalid-name,bare-except,too-many-arguments --extension-pkg-whitelist=torch,cv2'
-let g:ale_python_pycodestyle_options = '--ignore=E501,E226,E265'
-
-" pymode
-" This should act as a sensible configs for python code
-" so use only minimal configurations.
-let g:pymode_run = 0
-let g:pymode_breakpoint = 1
-let g:pymode_folding = 0
-let g:pymode_trim_whitespaces = 1
-let g:pymode_options = 1
-let g:pymode_lint = 0
-let g:pymode_doc = 0
-let g:pymode_rope = 0
-let g:pymode_motion = 1
-" Choose python version supported by vim, preferably python3.
-if has('python3')
-    let g:pymode_python = 'python3'
-else
-    let g:pymode_python = 'python'
-endif
 
 " vimtex
 if has('win32')
@@ -328,6 +317,12 @@ if has('win32')
         \ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
 endif
 let g:vimtex_quickfix_mode = 0
+" This requires neovim-remote.
+" Install with
+"   (sudo /usr/bin/python3 -m) pip install neovim-remote
+if executable('nvr')
+    let g:vimtex_compiler_progname = 'nvr'
+endif
 augroup leoyolo_vimtex
     autocmd!
     autocmd FileType tex nmap <silent> <F3> :call <SID>TexWriterModeToggle()<cr>
@@ -346,7 +341,7 @@ function! s:TexWriterModeToggle()
         let g:ale_linters['tex'] += ['alex', 'write-good']
     else
         let s:leoyolo_tex_writer_mode_toggled = 0
-        let g:ale_linters['tex'] 
+        let g:ale_linters['tex']
             \ = filter(g:ale_linters['tex'], 'v:val !~ "alex" && v:val !~ "write-good"')
     endif
     execute('ALELint')
@@ -399,3 +394,29 @@ command! -bang -nargs=* FzfRg
 " Likewise, Files command with preview window
 command! -bang -nargs=? -complete=dir FzfFiles
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+if executable('ag')
+    nnoremap <leader>g :FzfAg<cr>
+elseif executable('rg')
+    nnoremap <leader>g :FzfRg<cr>
+else
+    echohl Error
+    echo "No Ag or Ripgrep found."
+    echohl None
+endif
+
+" vim-polyglot
+" Prefer vimtex to latexbox.
+let g:polyglot_disabled = ['latex']
+
+" LanguageClient
+let g:LanguageClient_serverCommands = {}
+" Use ALE instead.
+let g:LanguageClient_diagnosticsEnable = 0
+nnoremap <silent> <F4> :call LanguageClient_contextMenu()<CR>
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+" Trim whitespace
+nnoremap <silent> <leader><space> :StripWhitespace<CR>

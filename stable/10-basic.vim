@@ -69,6 +69,10 @@ set ttimeoutlen=80
 
 " enable 256 color
 set t_Co=256
+" Experimental
+if has('nvim')
+    set termguicolors
+endif
 
 " Suppress marco. I don't use it.
 nnoremap q :echom "Marco is suppressed"<cr>
