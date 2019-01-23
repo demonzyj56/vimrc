@@ -56,7 +56,6 @@ Plug 'mhinz/vim-signify'
 Plug 'justinmk/vim-dirvish'
 Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
 Plug 'jiangmiao/auto-pairs'
-Plug 'raimondi/delimitmate'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'terryma/vim-multiple-cursors'
@@ -64,14 +63,12 @@ Plug 'terryma/vim-expand-region'
 Plug 'easymotion/vim-easymotion', {'on': ['<PLug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f2)']}
 Plug 'airblade/vim-rooter'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'Yggdroot/LeaderF'
 Plug 'mileszs/ack.vim', {'on': ['Ack', 'Ack!']}
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'majutsushi/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
-Plug 'junegunn/vim-emoji'
 Plug 'kassio/neoterm'
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'godlygeek/tabular'
@@ -80,11 +77,14 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'sheerun/vim-polyglot'
 Plug 'Shougo/echodoc.vim'
 Plug 'rust-lang/rust.vim'
+Plug 'tpope/vim-sleuth'
+Plug 'Yggdroot/indentLine'
 " FIXME(leoyolo): temporary block Denite for vim8.
 if has('nvim')
-    Plug 'Shougo/denite.nvim', {'do': 'UpdateRemotePlugins'}
-    Plug 'Shougo/defx.nvim', {'do': 'UpdateRemotePlugins'}
+    Plug 'Shougo/denite.nvim', {'do': ':UpdateRemotePlugins'}
+    Plug 'Shougo/defx.nvim', {'do': ':UpdateRemotePlugins'}
     Plug 'Shougo/neomru.vim'
+    Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
 endif
 
 " FZF is managed outside vim/nvim.
@@ -93,9 +93,6 @@ if executable('fzf')
     Plug expand('~/.fzf')
     Plug 'junegunn/fzf.vim'
 endif
-
-" TODO(leoyolo): figure out how to use.
-Plug 'skywind3000/vim-preview', {'on': []}
 
 if !has('win32')
     Plug 'autozimu/LanguageClient-neovim', {
@@ -123,7 +120,6 @@ else
     Plug 'ncm2/ncm2-bufword'
     Plug 'fgrsnau/ncm2-otherbuf', {'branch': 'ncm2'}
     Plug 'ncm2/ncm2-path'
-    Plug 'ncm2/ncm2-jedi'
     Plug 'ncm2/ncm2-ultisnips'
     Plug 'ncm2/ncm2-vim' | Plug 'Shougo/neco-vim'
     Plug 'ncm2/ncm2-syntax' | Plug 'Shougo/neco-syntax'
@@ -206,12 +202,13 @@ if has('python3')
     let g:gundo_prefer_python3 = 1
 endif
 
-" auto-pair
+" auto-pairs
 " unmap everything
 let g:AutoPairsShortcutToggle = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutBackInsert = ''
+au FileType vim let b:AutoPairs = {'(':')', '[':']', '{':'}', "'":"'", '`':'`'}
 
 
 " vim-multiple-cursors
@@ -239,31 +236,10 @@ let g:rooter_use_lcd = 1
 
 " Code dispatcher: asyncrun
 let g:asyncrun_status = ''
-" let g:airline_section_error = g:airline#section#create_right(['%{g:asyncrun_status}'])
-let g:asyncrun_open = 10
+let g:airline_section_error = g:airline#section#create_right(['%{g:asyncrun_status}'])
+let g:asyncrun_open = 16
 let g:asyncrun_rootmarks = g:leoyolo_project_root
 nnoremap <silent> <F10> :call asyncrun#quickfix_toggle(g:asyncrun_open)<cr>
-
-" Navigation: leaderf
-let g:Lf_ShortcutF = '<c-p>'
-let g:Lf_ShortcutB = '<m-n>'
-noremap <m-p> :LeaderfFunction!<cr>
-noremap <c-n> :LeaderfMru<cr>
-let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
-let g:Lf_RootMarkers = g:leoyolo_project_root
-let g:Lf_WorkingDirectoryMode = 'Ac'
-let g:Lf_WindowHeight = 0.30
-let g:Lf_CacheDirectory = expand('~/.cache/leaderf')
-let g:Lf_ShowRelativePath = 0
-let g:Lf_StlColorscheme = 'powerline'
-let g:Lf_NormalMap = {
-	\ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
-	\ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
-	\ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
-	\ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
-	\ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
-	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
-	\ }
 
 " Grepper:
 if executable('ag')
@@ -377,35 +353,15 @@ let g:fzf_colors =
 "       - CodeRay: http://coderay.rubychan.de/
 "       - Rouge: https://github.com/jneen/rouge
 "
-"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
-"   :Ag! - Start fzf in fullscreen and display the preview window above
-command! -bang -nargs=* FzfAg
+"   :AgWithPreview  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :AgWithPreview! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* AgWithPreview
   \ call fzf#vim#ag(<q-args>,
   \                 <bang>0 ? fzf#vim#with_preview('up:60%')
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
+nnoremap <M-p> :<C-u>AgWithPreview<cr>
 
-" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
-command! -bang -nargs=* FzfRg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-" Likewise, Files command with preview window
-command! -bang -nargs=? -complete=dir FzfFiles
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-if executable('ag')
-    nnoremap <leader>g :FzfAg<cr>
-elseif executable('rg')
-    nnoremap <leader>g :FzfRg<cr>
-else
-    echohl Error
-    echo "No Ag or Ripgrep found."
-    echohl None
-endif
 
 " vim-polyglot
 " Prefer vimtex to latexbox.
@@ -415,6 +371,7 @@ let g:polyglot_disabled = ['latex']
 let g:LanguageClient_serverCommands = {}
 " Use ALE instead.
 let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_rootMarkers = g:leoyolo_project_root
 nnoremap <silent> <F4> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
@@ -426,3 +383,10 @@ nnoremap <silent> <leader><space> :StripWhitespace<CR>
 " echodoc
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'signature'
+
+" vim-sleuth
+let g:sleuth_automatic = 1
+
+" fruzzy
+let g:fruzzy#usenative = 1
+let g:fruzzy#sortonempty = 0

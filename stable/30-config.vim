@@ -9,7 +9,7 @@ set tags=./.tags;,.tags
 
 " wildignore
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.db,*.sqlite,*~,*.pkl,*.npy
-set wildignore+=*.o,*.obj,.git,.svn,.hg,*.rbc,*.pyc,__pycache__
+set wildignore+=*.o,*.obj,.git/,.svn/,.hg/,*.rbc,*.pyc,__pycache__/
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif

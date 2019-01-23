@@ -6,43 +6,44 @@
 if !has_key(g:plugs, 'denite.nvim') || !has('nvim')
     finish
 endif
-" Change mappings.
-call denite#custom#map(
-      \ 'insert',
-      \ '<C-j>',
-      \ '<denite:move_to_next_line>',
-      \ 'noremap'
-      \)
-call denite#custom#map(
-      \ 'insert',
-      \ '<C-k>',
-      \ '<denite:move_to_previous_line>',
-      \ 'noremap'
-      \)
 
-if executable('ag')
-    call denite#custom#var('file/rec', 'command',
-        \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', '']
-        \ )
-	call denite#custom#var('grep', 'command', ['ag'])
-	call denite#custom#var('grep', 'default_opts',
-		\ ['-i', '--vimgrep']
-        \ )
-	call denite#custom#var('grep', 'recursive_opts', [])
-	call denite#custom#var('grep', 'pattern_opt', [])
-	call denite#custom#var('grep', 'separator', ['--'])
-	call denite#custom#var('grep', 'final_opts', [])
-endif
-call denite#custom#option('default', 'statusline', v:false)
+" Setup default options for all buffers.
+call denite#custom#option("_", {
+  \ 'auto_accel': v:true,
+  \ 'root_markers': g:leoyolo_project_root,
+  \ 'updatetime': 0,
+  \ 'highlight_matched_char': 'Function',
+  \ 'highlight_matched_range': 'None',
+  \ })
+call denite#custom#filter('matcher/ignore_globs', 'ignore_globs',
+  \ split(&wildignore, ","))
+call denite#custom#source('_', 'matchers',
+  \ ['matcher/fruzzy'])
+call denite#custom#source('_', 'sorters', ['sorter/sublime'])
+
+" Ag for file/rec
+call denite#custom#alias('source', 'file/rec/ag', 'file/rec')
+call denite#custom#var('file/rec/ag', 'command',
+  \ ['ag', '-f', '-U', '--nocolor', '--nogroup', '--hidden', '-g', ''])
+
+
+" Change mappings.
+call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplit>', 'noremap')
+call denite#custom#map('insert', '<C-x>', '<denite:do_action:split>', 'noremap')
+call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabopen>', 'noremap')
+
+
 " default mapping for denite
-nnoremap <leader>dg :Denite grep<cr>
-nnoremap <leader>db :Denite buffer<cr>
-nnoremap <leader>df :Denite file_rec<cr>
-nnoremap <leader>dm :Denite file_mru<cr>
-nnoremap <leader>dd :Denite directory_mru<cr>
-if has('gui_running')
-    call denite#custom#option('default', 'prompt', emoji#for('cat').emoji#for('cat').emoji#for('cat'))
-endif
+nnoremap <leader>dg :<C-u>Denite grep<cr>
+nnoremap <leader>db :<C-u>Denite buffer<cr>
+nnoremap <leader>df :<C-u>Denite file/rec<cr>
+nnoremap <leader>dm :<C-u>Denite file_mru<cr>
+nnoremap <leader>dd :<C-u>Denite directory_mru<cr>
+nnoremap <leader>dh :<C-u>Denite help<cr>
+nnoremap <C-p> :<C-u>Denite file/rec/ag<cr>
+nnoremap <C-n> :<C-u>Denite file_mru<cr>
 
 " Defx settings
 autocmd FileType defx call s:defx_my_settings()
