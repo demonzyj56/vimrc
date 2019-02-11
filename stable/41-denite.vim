@@ -15,16 +15,17 @@ call denite#custom#option("_", {
   \ 'highlight_matched_char': 'Function',
   \ 'highlight_matched_range': 'None',
   \ })
-call denite#custom#filter('matcher/ignore_globs', 'ignore_globs',
-  \ split(&wildignore, ","))
 call denite#custom#source('_', 'matchers',
   \ ['matcher/fruzzy'])
-call denite#custom#source('_', 'sorters', ['sorter/sublime'])
 
 " Ag for file/rec
 call denite#custom#alias('source', 'file/rec/ag', 'file/rec')
 call denite#custom#var('file/rec/ag', 'command',
   \ ['ag', '-f', '-U', '--nocolor', '--nogroup', '--hidden', '-g', ''])
+
+" scantree
+call denite#custom#alias('source', 'file/rec/py', 'file/rec')
+call denite#custom#var('file/rc/py', 'command', ['scantree.py', '--ignore', &wildignore])
 
 
 " Change mappings.
@@ -40,9 +41,10 @@ nnoremap <leader>dg :<C-u>Denite grep<cr>
 nnoremap <leader>db :<C-u>Denite buffer<cr>
 nnoremap <leader>df :<C-u>Denite file/rec<cr>
 nnoremap <leader>dm :<C-u>Denite file_mru<cr>
-nnoremap <leader>dd :<C-u>Denite directory_mru<cr>
+nnoremap <leader>dd :<C-u>Denite directory_mru -default-action='open'<cr>
 nnoremap <leader>dh :<C-u>Denite help<cr>
-nnoremap <C-p> :<C-u>Denite file/rec/ag<cr>
+nnoremap <leader>dr :<C-u>Denite register<cr>
+nnoremap <C-p> :<C-u>Denite file/rec/py<cr>
 nnoremap <C-n> :<C-u>Denite file_mru<cr>
 
 " Defx settings

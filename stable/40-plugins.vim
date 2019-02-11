@@ -89,10 +89,12 @@ endif
 
 " FZF is managed outside vim/nvim.
 " TODO(leoyolo): compatible with windows.
-if executable('fzf')
-    Plug expand('~/.fzf')
-    Plug 'junegunn/fzf.vim'
+if has('win32')
+  Plug 'junegunn/fzf'
+else
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 endif
+Plug 'junegunn/fzf.vim'
 
 if !has('win32')
     Plug 'autozimu/LanguageClient-neovim', {
@@ -136,7 +138,7 @@ catch
 endtry
 
 " vim-airline
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 let g:airline_skip_empty_sections = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:alrline#extensions#ale#enabled = 1
@@ -361,6 +363,7 @@ command! -bang -nargs=* AgWithPreview
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
 nnoremap <M-p> :<C-u>AgWithPreview<cr>
+nnoremap <M-n> :<C-u>FzfBuffers<cr>
 
 
 " vim-polyglot
@@ -390,3 +393,6 @@ let g:sleuth_automatic = 1
 " fruzzy
 let g:fruzzy#usenative = 1
 let g:fruzzy#sortonempty = 0
+
+" indentLine
+let g:indentLine_fileTypeExclude = ['tex']

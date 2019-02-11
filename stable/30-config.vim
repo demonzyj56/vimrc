@@ -9,7 +9,7 @@ set tags=./.tags;,.tags
 
 " wildignore
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.db,*.sqlite,*~,*.pkl,*.npy
-set wildignore+=*.o,*.obj,.git/,.svn/,.hg/,*.rbc,*.pyc,__pycache__/
+set wildignore+=*.o,*.obj,.git,.svn,.hg,*.rbc,*.pyc,__pycache__
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -44,18 +44,19 @@ command! -nargs=+ -complete=help HH :help <args>
 command! -nargs=+ -complete=help VH :vertical help <args>
 
 " Specify python version for nvim before loading any plugins.
-" TODO(leoyolo): This works for neovim only. Suggest a good way for vim8.
 if filereadable(s:vim_bin . '/python3')
     let g:python3_host_prog = s:vim_bin . '/python3'
 elseif !has('win32')
     let g:python3_host_prog = '/usr/bin/python3'
 else
-    let g:python3_host_prog = 'python3'
+    let g:leoyolo_python3_root = s:vim_bin.'/Python37'
+    let g:python3_host_prog = g:leoyolo_python3_root.'/python.exe'
+    let $PATH = g:leoyolo_python3_root.'/Scripts'.';'.$PATH
 endif
 if filereadable(s:vim_bin . '/python2')
     let g:python_host_prog = s:vim_bin . '/python2'
 elseif !has('win32')
     let g:python_host_prog = '/usr/bin/python2'
 else
-    let g:python_host_prog = 'python2'
+    let g:python_host_prog = 'C:\\Python27\python.exe'
 endif
