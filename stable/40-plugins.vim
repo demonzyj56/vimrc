@@ -229,7 +229,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " easymotion
 map <Leader><Leader> <Plug>(easymotion-prefix)
-nmap s <Plug>(easymotion-overwin-f2)
+nmap <M-s> <Plug>(easymotion-overwin-f2)
 
 " vim-rooter
 let g:rooter_patterns = g:leoyolo_project_root
