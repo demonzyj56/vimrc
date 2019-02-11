@@ -25,9 +25,6 @@ let s:bin_paths_to_add
     \ = filter(globpath(s:vim_bin, '*', 0, 1), 'isdirectory(v:val)') + [s:vim_bin]
 if has('win32')
     let $PATH = join(s:bin_paths_to_add, ';').';'.$PATH
-    if !has('python') || isdirectory('C:\\Python27')
-        let $PATH = 'C:\\Python27'.';'.$PATH
-    endif
 else
     let $PATH = join(s:bin_paths_to_add, ':').':'.$PATH
 endif
@@ -42,21 +39,24 @@ let g:leoyolo_project_root = [
 " Display help at ease
 command! -nargs=+ -complete=help HH :help <args>
 command! -nargs=+ -complete=help VH :vertical help <args>
+command! -nargs=+ -complete=help TH :tab help <args>
 
-" Specify python version for nvim before loading any plugins.
-if filereadable(s:vim_bin . '/python3')
-    let g:python3_host_prog = s:vim_bin . '/python3'
-elseif !has('win32')
-    let g:python3_host_prog = '/usr/bin/python3'
-else
-    let g:leoyolo_python3_root = s:vim_bin.'/Python37'
-    let g:python3_host_prog = g:leoyolo_python3_root.'/python.exe'
-    let $PATH = g:leoyolo_python3_root.'/Scripts'.';'.$PATH
+" Specify standard python location for nvim before loading any plugins.
+if get(g:, 'python3_host_prog', 0) == 0
+    if has('win32')
+        let g:leoyolo_python3_root = s:vim_bin.'/Python37'
+        let g:python3_host_prog = g:leoyolo_python3_root.'/python.exe'
+        " This is to ensure that python packages (e.g. pylint, nvr) can be discovered.
+        let $PATH = g:leoyolo_python3_root.'/Scripts'.';'.$PATH
+    else
+        let g:python3_host_prog = '/usr/bin/python3'
+    endif
 endif
-if filereadable(s:vim_bin . '/python2')
-    let g:python_host_prog = s:vim_bin . '/python2'
-elseif !has('win32')
-    let g:python_host_prog = '/usr/bin/python2'
-else
-    let g:python_host_prog = 'C:\\Python27\python.exe'
+if get(g:, 'python_host_prog', 0) == 0
+    if has('win32')
+        let g:python_host_prog = 'C:\\Python27\python.exe'
+        let $PATH = 'C:\\Python27'.';'.$PATH
+    else
+        let g:python_host_prog = '/usr/bin/python2'
+    endif
 endif
