@@ -60,9 +60,10 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region'
-Plug 'easymotion/vim-easymotion', {'on': ['<PLug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f2)']}
+Plug 'easymotion/vim-easymotion'
 Plug 'airblade/vim-rooter'
 Plug 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/vim-preview'
 Plug 'mileszs/ack.vim', {'on': ['Ack', 'Ack!']}
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -79,13 +80,14 @@ Plug 'Shougo/echodoc.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
-" FIXME(leoyolo): temporary block Denite for vim8.
 if has('nvim')
     Plug 'Shougo/denite.nvim', {'do': ':UpdateRemotePlugins'}
     Plug 'Shougo/defx.nvim', {'do': ':UpdateRemotePlugins'}
     Plug 'Shougo/neomru.vim'
-    Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
+else
+    Plug 'ctrlpvim/ctrlp.vim'
 endif
+Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
 
 " FZF is managed outside vim/nvim.
 " TODO(leoyolo): compatible with windows.
@@ -146,7 +148,6 @@ let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#gutentags#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#languageclient#enabled = 1
-let g:airline#extensions#vimtex#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#buffer_idx_format = {
     \ '0': '0:',
@@ -230,6 +231,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " easymotion
 map <Leader><Leader> <Plug>(easymotion-prefix)
 nmap <M-s> <Plug>(easymotion-overwin-f2)
+nmap <space> <Plug>(easymotion-bd-jk)
 
 " vim-rooter
 let g:rooter_patterns = g:leoyolo_project_root
@@ -275,7 +277,6 @@ endif
 " ale
 let g:ale_linters = {
     \'cpp': ['clangtidy', 'cppcheck', 'clang', 'g++'],
-    \'tex': ['chktex'],
 \}
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
@@ -283,49 +284,6 @@ let g:ale_echo_delay = 20
 let g:ale_lint_delay = 500
 let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 let g:ale_lint_on_insert_leave = 1
-
-" vimtex
-if has('win32')
-    let g:vimtex_view_general_viewer = 'SumatraPDF'
-    let g:vimtex_view_general_options
-        \ = '-reuse-instance -forward-search @tex @line @pdf'
-        \ . ' -inverse-search "gvim --servername ' . v:servername
-        \ . ' --remote-send \"^<C-\^>^<C-n^>'
-        \ . ':drop \%f^<CR^>:\%l^<CR^>:normal\! zzzv^<CR^>'
-        \ . ':execute ''drop '' . fnameescape(''\%f'')^<CR^>'
-        \ . ':\%l^<CR^>:normal\! zzzv^<CR^>'
-        \ . ':call remote_foreground('''.v:servername.''')^<CR^>^<CR^>\""'
-endif
-let g:vimtex_quickfix_mode = 0
-" This requires neovim-remote.
-" Install with
-"   (sudo /usr/bin/python3 -m) pip install neovim-remote
-if executable('nvr')
-    let g:vimtex_compiler_progname = 'nvr'
-endif
-augroup leoyolo_vimtex
-    autocmd!
-    autocmd FileType tex nmap <silent> <F3> :call <SID>TexWriterModeToggle()<cr>
-    autocmd FileType tex nmap <F5> <plug>(vimtex-compile)
-augroup END
-
-" Toggle writer mode on and off
-function! s:TexWriterModeToggle()
-    setlocal spell! spelllang=en
-    " Optionally if a tex file, set/unset alex/write-good linters
-    if !has_key(g:ale_linters, 'tex')
-        let g:ale_linters['tex'] = []
-    endif
-    if !exists('s:leoyolo_tex_writer_mode_toggled') || !s:leoyolo_tex_writer_mode_toggled
-        let s:leoyolo_tex_writer_mode_toggled = 1
-        let g:ale_linters['tex'] += ['alex', 'write-good']
-    else
-        let s:leoyolo_tex_writer_mode_toggled = 0
-        let g:ale_linters['tex']
-            \ = filter(g:ale_linters['tex'], 'v:val !~ "alex" && v:val !~ "write-good"')
-    endif
-    execute('ALELint')
-endfunction
 
 
 " FZF
@@ -366,10 +324,6 @@ nnoremap <M-p> :<C-u>AgWithPreview<cr>
 nnoremap <M-n> :<C-u>FzfBuffers<cr>
 
 
-" vim-polyglot
-" Prefer vimtex to latexbox.
-let g:polyglot_disabled = ['latex']
-
 " LanguageClient
 let g:LanguageClient_serverCommands = {}
 " Use ALE instead.
@@ -378,6 +332,7 @@ let g:LanguageClient_rootMarkers = g:leoyolo_project_root
 nnoremap <silent> <F4> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> gp :call LanguageClient#textDocument_definition({'gotoCmd':'PreviewFile'})<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " Trim whitespace
@@ -394,5 +349,12 @@ let g:sleuth_automatic = 1
 let g:fruzzy#usenative = 1
 let g:fruzzy#sortonempty = 0
 
-" indentLine
-let g:indentLine_fileTypeExclude = ['tex']
+" CtrlP
+if has_key(g:plugs, 'ctrlp.vim')
+  let g:ctrlp_match_func = {'match': 'fruzzy#ctrlp#matcher'}
+  let g:ctrlp_match_current_file = 1
+  let g:ctrlp_root_markers = g:leoyolo_project_root
+  let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+  let g:ctrlp_show_hidden = 1
+  nnoremap <C-n> :<C-u>CtrlPMRU<cr>
+endif

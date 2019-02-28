@@ -47,11 +47,6 @@ nnoremap <leader>dr :<C-u>Denite register<cr>
 nnoremap <C-p> :<C-u>Denite file/rec/py<cr>
 nnoremap <C-n> :<C-u>Denite file_mru<cr>
 
-augroup leoyolo_vimtex_denite
-    autocmd!
-    autocmd FileType tex nnoremap <leader>dv :<C-u>Denite vimtex<cr>
-augroup END
-
 " Defx settings
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
