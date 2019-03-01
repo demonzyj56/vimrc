@@ -6,6 +6,8 @@ if has_key(g:plugs, 'vimtex')
     nmap K <plug>(vimtex-doc-package)
     nnoremap <leader>dv :<C-u>Denite vimtex<cr>
 endif
+let b:AutoPairs = g:AutoPairs
+let b:AutoPairs['$'] = '$'
 
 " Toggle writer mode on and off
 function! s:TexWriterModeToggle()
