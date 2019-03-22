@@ -4,8 +4,8 @@ else
     let s:leoyolo_vimrc_loaded = 1
 endif
 
-let s:home = fnamemodify(resolve(expand('<sfile>:p')), ':h')
-exec 'set rtp+='.s:home
+let g:leoyolo_home = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+exec 'set rtp+='.g:leoyolo_home
 
 function! s:load_script(p) abort
     " The path p is assumed to be full path
@@ -22,9 +22,9 @@ function! s:load_all_from(p) abort
 endfunction
 
 function! s:load_all_scripts() abort
-    call <SID>load_all_from(s:home.'/stable')
-    if isdirectory(s:home.'/experimental')
-        call <SID>load_all_from(s:home.'/experimental')
+    call <SID>load_all_from(g:leoyolo_home.'/stable')
+    if isdirectory(g:leoyolo_home.'/experimental')
+        call <SID>load_all_from(g:leoyolo_home.'/experimental')
     endif
     return 0
 endfunction
