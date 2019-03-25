@@ -1,3 +1,7 @@
+" disable tex conceal
+let g:tex_conceal = ''
+
+" Vimtex specific settings.
 " If you don't have vimtex, why bother to use vim for tex files?
 if !has_key(g:plugs, 'vimtex')
     finish
