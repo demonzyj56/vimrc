@@ -1,11 +1,27 @@
 " My configs for denite
 
 " Check whether we have denite, above all.
-" FIXME(leoyolo): temporary block Denite for nvim.
-" I seldomly use it, though.
 if !has_key(g:plugs, 'denite.nvim') || !has('nvim')
     finish
 endif
+
+" Denite has change its usage to be hard as fuck.
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  " do action means do default action
+  nnoremap <silent><buffer><expr> <CR>
+  \ denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> d
+  \ denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> p
+  \ denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q
+  \ denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i
+  \ denite#do_map('open_filter_buffer')
+  nnoremap <silent><buffer><expr> <Space>
+  \ denite#do_map('toggle_select').'j'
+endfunction
 
 " Setup default options for all buffers.
 call denite#custom#option("_", {

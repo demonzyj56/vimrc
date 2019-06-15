@@ -9,10 +9,10 @@ set nocompatible
 set backspace=eol,start,indent
 set fileformats=unix,dos,mac
 set autoread
-syntax enable
 filetype on
 filetype plugin on
 filetype indent on
+syntax enable
 
 " menu
 " required by YouCompleteMe
