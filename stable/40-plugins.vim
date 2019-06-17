@@ -80,13 +80,7 @@ Plug 'Shougo/echodoc.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
-if has('nvim')
-    Plug 'Shougo/denite.nvim', {'do': ':UpdateRemotePlugins'}
-    Plug 'Shougo/defx.nvim', {'do': ':UpdateRemotePlugins'}
-    Plug 'Shougo/neomru.vim'
-else
-    Plug 'ctrlpvim/ctrlp.vim'
-endif
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'raghur/fruzzy', {'do': { -> fruzzy#install()}}
 
 " FZF is managed outside vim/nvim.
@@ -350,11 +344,15 @@ let g:fruzzy#usenative = 1
 let g:fruzzy#sortonempty = 0
 
 " CtrlP
-if has_key(g:plugs, 'ctrlp.vim')
-  let g:ctrlp_match_func = {'match': 'fruzzy#ctrlp#matcher'}
-  let g:ctrlp_match_current_file = 1
-  let g:ctrlp_root_markers = g:leoyolo_project_root
-  let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-  let g:ctrlp_show_hidden = 1
-  nnoremap <C-n> :<C-u>CtrlPMRU<cr>
+if executable('fd')
+  let g:ctrlp_user_command =
+    \ printf('fd --type f --follow --color never --ignore-file %s "" %%s', g:leoyolo_home.'/configs/ignore')
+  let g:ctrlp_use_caching = 0
 endif
+let g:ctrlp_match_func = {'match': 'fruzzy#ctrlp#matcher'}
+let g:ctrlp_match_current_file = 1
+let g:ctrlp_root_markers = g:leoyolo_project_root
+let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+let g:ctrlp_match_window = 'max:20'
+nnoremap <C-p> :<C-u>CtrlP<cr>
+nnoremap <C-n> :<C-u>CtrlPMRU<cr>
