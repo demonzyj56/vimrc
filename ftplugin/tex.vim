@@ -19,7 +19,7 @@ call ale#linter#Define('tex', {
 " write-good customization
 let g:ale_writegood_options = '--no-passive'
 
-let b:leoyolo_writer_linters = ['alex', 'redpen-leoyolo', 'write-good']
+let g:leoyolo_writer_linters = ['alex', 'redpen-leoyolo', 'write-good']
 
 " Toggle writer mode on and off
 function! s:TexWriterModeToggle()
@@ -30,11 +30,11 @@ function! s:TexWriterModeToggle()
     endif
     if !exists('s:leoyolo_tex_writer_mode_toggled') || !s:leoyolo_tex_writer_mode_toggled
         let s:leoyolo_tex_writer_mode_toggled = 1
-        let g:ale_linters['tex'] += b:leoyolo_writer_linters
+        let g:ale_linters['tex'] += g:leoyolo_writer_linters
     else
         let s:leoyolo_tex_writer_mode_toggled = 0
         let g:ale_linters['tex']
-            \ = filter(g:ale_linters['tex'], 'get(b:leoyolo_writer_linters, v:val, v:true) == v:true')
+            \ = filter(g:ale_linters['tex'], 'get(g:leoyolo_writer_linters, v:val, v:true) == v:true')
     endif
     execute('ALELint')
 endfunction

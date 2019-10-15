@@ -1,6 +1,10 @@
 " disable tex conceal
 let g:tex_conceal = ''
 
+" Force detecting all types of .tex file as tex filetype.
+" https://superuser.com/questions/208177/vim-and-tex-filetypes-plaintex-vs-tex
+let g:tex_flavor = 'latex'
+
 " Vimtex specific settings.
 " If you don't have vimtex, why bother to use vim for tex files?
 if !has_key(g:plugs, 'vimtex')
