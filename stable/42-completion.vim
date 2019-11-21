@@ -1,5 +1,5 @@
 " For completion plugins.
-if get(g:, 'leoyolo_prefer_ycm', 0) != 0
+if 1
     let g:airline#extensions#ycm#enabled = 1
     " YouCompleteMe
     " from https://zhuanlan.zhihu.com/p/33046090
@@ -31,6 +31,7 @@ if get(g:, 'leoyolo_prefer_ycm', 0) != 0
       \   'ruby' : ['.', '::'],
       \   'lua' : ['.', ':'],
       \   'erlang' : [':'],
+      \   'tex': g:vimtex#re#youcompleteme,
       \ }
     let g:ycm_semantic_triggers =  {
       \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -39,17 +40,17 @@ if get(g:, 'leoyolo_prefer_ycm', 0) != 0
 endif
 
 " ncm2 and language server configs
-if get(g:, 'leoyolo_prefer_ncm2', 0) != 0
-    autocmd BufEnter * call ncm2#enable_for_buffer()
-    set completeopt=noinsert,menuone,noselect
-    set shortmess+=c
-    " When the <Enter> key is pressed while the popup menu is visible, it only
-    " hides the menu. Use this mapping to close the menu and also start a new
-    " line.
-    " Use <TAB> to select the popup menu:
-    inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-
-endif
+" if get(g:, 'leoyolo_prefer_ncm2', 0) != 0
+"     autocmd BufEnter * call ncm2#enable_for_buffer()
+"     set completeopt=noinsert,menuone,noselect
+"     set shortmess+=c
+"     " When the <Enter> key is pressed while the popup menu is visible, it only
+"     " hides the menu. Use this mapping to close the menu and also start a new
+"     " line.
+"     " Use <TAB> to select the popup menu:
+"     inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+"     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"
+"
+" endif

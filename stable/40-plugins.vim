@@ -6,6 +6,10 @@ if has('win32') && empty(glob('~/vimfiles/autoload/plug.vim'))
     echo "Error: Cannot find vim-plug. You have to install manually."
     echohl None
     finish
+elseif has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 elseif !has('win32') && empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -41,10 +45,10 @@ endfunction
 call plug#begin()
 
 " NVIM support
-if !has('nvim')
-    Plug 'roxma/vim-hug-neovim-rpc'
-endif
-Plug 'roxma/nvim-yarp'
+" if !has('nvim')
+"     Plug 'roxma/vim-hug-neovim-rpc'
+"     Plug 'roxma/nvim-yarp'
+" endif
 
 Plug 'hachy/eva01.vim'
 Plug 'morhetz/gruvbox'
@@ -69,7 +73,8 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'majutsushi/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'w0rp/ale'
+" Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'kassio/neoterm'
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'godlygeek/tabular'
@@ -92,19 +97,19 @@ else
 endif
 Plug 'junegunn/fzf.vim'
 
-if !has('win32')
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
-else
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'powershell -executionpolicy bypass -File install.ps1',
-        \ }
-endif
+" if !has('win32')
+"     Plug 'autozimu/LanguageClient-neovim', {
+"         \ 'branch': 'next',
+"         \ 'do': 'bash install.sh',
+"         \ }
+" else
+"     Plug 'autozimu/LanguageClient-neovim', {
+"         \ 'branch': 'next',
+"         \ 'do': 'powershell -executionpolicy bypass -File install.ps1',
+"         \ }
+" endif
 
-if get(g:, 'leoyolo_prefer_ycm', 0) != 0
+if 1
     if has('win32')
         Plug UnmanagedPlugins('YouCompleteMe')
     else
@@ -140,8 +145,9 @@ let g:airline#extensions#tabline#enabled = 1
 let g:alrline#extensions#ale#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#gutentags#enabled = 1
+let g:airline#extensions#vimtex#enabled = 1
 let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#languageclient#enabled = 1
+" let g:airline#extensions#languageclient#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#buffer_idx_format = {
     \ '0': '0:',
@@ -268,16 +274,6 @@ if has('python')
 endif
 
 
-" ale
-let g:ale_linters = {
-    \'cpp': ['clangtidy', 'cppcheck', 'clang', 'g++'],
-\}
-let g:ale_linters_explicit = 1
-let g:ale_completion_delay = 500
-let g:ale_echo_delay = 20
-let g:ale_lint_delay = 500
-let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-let g:ale_lint_on_insert_leave = 1
 
 
 " FZF
@@ -319,15 +315,15 @@ nnoremap <M-n> :<C-u>FzfBuffers<cr>
 
 
 " LanguageClient
-let g:LanguageClient_serverCommands = {}
+" let g:LanguageClient_serverCommands = {}
 " Use ALE instead.
-let g:LanguageClient_diagnosticsEnable = 0
-let g:LanguageClient_rootMarkers = g:leoyolo_project_root
-nnoremap <silent> <F4> :call LanguageClient_contextMenu()<CR>
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> gp :call LanguageClient#textDocument_definition({'gotoCmd':'PreviewFile'})<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+" let g:LanguageClient_diagnosticsEnable = 0
+" let g:LanguageClient_rootMarkers = g:leoyolo_project_root
+" nnoremap <silent> <F4> :call LanguageClient_contextMenu()<CR>
+" nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+" nnoremap <silent> gp :call LanguageClient#textDocument_definition({'gotoCmd':'PreviewFile'})<CR>
+" nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " Trim whitespace
 nnoremap <silent> <leader><space> :StripWhitespace<CR>

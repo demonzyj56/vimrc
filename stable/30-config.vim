@@ -33,7 +33,7 @@ endif
 let g:leoyolo_project_root = [
     \ '.git', '.git/',
     \ '.root', '.idea/', '.svn/', '.hg/', '.project', '.ropeproject',
-    \ '.bzr', '.github/'
+    \ '.bzr', '.github/', 'Carogo.toml', '.python-version'
     \ ]
 
 " Display help at ease
@@ -42,7 +42,7 @@ command! -nargs=+ -complete=help VH :vertical help <args>
 command! -nargs=+ -complete=help TH :tab help <args>
 
 " Specify standard python location for nvim before loading any plugins.
-if get(g:, 'python3_host_prog', v:false) == v:false
+if !exists('g:python3_host_prog')
     if has('win32')
         let g:leoyolo_python3_root = s:vim_bin.'/Python37'
         let g:python3_host_prog = g:leoyolo_python3_root.'/python.exe'
@@ -52,7 +52,7 @@ if get(g:, 'python3_host_prog', v:false) == v:false
         let g:python3_host_prog = '/usr/bin/python3'
     endif
 endif
-if get(g:, 'python_host_prog', v:false) == v:false
+if !exists('g:python_host_prog')
     if has('win32')
         let g:python_host_prog = 'C:\\Python27\python.exe'
         let $PATH = 'C:\\Python27'.';'.$PATH
